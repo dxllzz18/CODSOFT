@@ -1,0 +1,114 @@
+#include <iostream>
+
+using namespace std;
+
+// Function to check if a player has won
+bool checkWin(char board[3][3], char playerSymbol) {
+  // Check rows
+  for (int i = 0; i < 3; i++) {
+    if (board[i][0] == playerSymbol && board[i][1] == playerSymbol && board[i][2] == playerSymbol) {
+      return true;
+    }
+  }
+
+  // Check columns
+  for (int j = 0; j < 3; j++) {
+    if (board[0][j] == playerSymbol && board[1][j] == playerSymbol && board[2][j] == playerSymbol) {
+      return true;
+    }
+  }
+
+  // Check diagonals
+  if (board[0][0] == playerSymbol && board[1][1] == playerSymbol && board[2][2] == playerSymbol) {
+    return true;
+  }
+
+  if (board[2][0] == playerSymbol && board[1][1] == playerSymbol && board[0][2] == playerSymbol) {
+    return true;
+  }
+
+  return false;
+}
+
+// Function to check if the game is a draw
+bool checkDraw(char board[3][3]) {
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (board[i][j] == ' ') {
+        return false; // Empty cell found, so not a draw
+      }
+    }
+  }
+  return true; // All cells filled, so it's a draw
+}
+
+// Main function
+int main() {
+  char board[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}}; // Initialize the board with empty cells
+
+  string player1Name, player2Name;
+  cout << "Enter player 1's name: ";
+  cin >> player1Name;
+
+  cout << "Enter player 2's name: ";
+  cin >> player2Name;
+
+  char currentPlayerSymbol = 'X'; // Start with player X
+  bool gameOver = false; // Initially, the game is not over
+
+  while (!gameOver) {
+    // Display the current state of the board within a box
+    cout << "+---+---+---+" << endl;
+    for (int i = 0; i < 3; i++) {
+      cout << "| ";
+      for (int j = 0; j < 3; j++) {
+        cout << board[i][j] << " | ";
+      }
+      cout << endl;
+      cout << "+---+---+---+" << endl;
+    }
+
+    // Prompt the current player to enter their move
+    string currentPlayerName = currentPlayerSymbol == 'X' ? player1Name : player2Name;
+    cout << currentPlayerName << ", enter your move (row, column): ";
+    int row, column;
+    cin >> row >> column;
+
+    // Convert user input from 1-based indexing to 0-based indexing
+    row--;
+    column--;
+
+    // Update the board with the player's move
+    if (board[row][column] == ' ') {
+      board[row][column] = currentPlayerSymbol;
+    } else {
+      cout << "Invalid move. Please try again." << endl;
+      continue; // Invalid move, so skip to the next iteration of the loop
+    }
+
+    // Check for win
+    if (checkWin(board, currentPlayerSymbol)) {
+      gameOver = true;
+      cout << currentPlayerName << " wins!" << endl;
+    } else if (checkDraw(board)) {
+      gameOver = true;
+      cout << "The game is a draw." << endl;
+    } else {
+      // Switch players
+      currentPlayerSymbol = currentPlayerSymbol == 'X' ? 'O' : 'X';
+    }
+  }
+
+  // Play again prompt
+  char playAgain;
+  cout << "Do you want to play again? (Y/N): ";
+  cin >> playAgain;
+
+  if (playAgain == 'Y' || playAgain == 'y') {
+    main(); // Restart the game
+  } else {
+    cout << "Thank you for playing!" << endl;
+  }
+
+  return 0;
+}
